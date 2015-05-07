@@ -260,7 +260,7 @@ class Test(object):
         bod = self.body
 
         # Set read function for post/put bodies
-        if self.method == u'POST' or self.method == u'PUT':
+        if self.method == u'POST' or self.method == u'PUT' or self.method == u'DELETE':
             if bod and len(bod) > 0:
                 curl.setopt(curl.READFUNCTION, StringIO(bod).read)
             #else:
@@ -287,6 +287,11 @@ class Test(object):
                 curl.setopt(pycurl.INFILESIZE, 0)
         elif self.method == u'DELETE':
             curl.setopt(curl.CUSTOMREQUEST,'DELETE')
+            if bod is not None:
+                curl.setopt(pycurl.POST, 1)
+                curl.setopt(pycurl.POSTFIELDSIZE, len(bod))
+            else:
+                curl.setopt(pycurl.POSTFIELDSIZE, 0)
 
         head = self.get_headers(context=context)
         if head: #Convert headers dictionary to list of header entries, tested and working
